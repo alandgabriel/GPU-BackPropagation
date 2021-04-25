@@ -1,0 +1,3 @@
+/home/icasasola/proyecto2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/icasasola/proyecto2/cmake-build-debug/CMakeFiles/Cuda_NNS.dir
+/home/icasasola/proyecto2/cmake-build-debug/CMakeFiles/edit_cache.dir
