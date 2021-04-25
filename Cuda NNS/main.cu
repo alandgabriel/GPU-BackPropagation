@@ -10,7 +10,7 @@
 #define WX 9 //Columnas de X
 #define HY 699 //Filas de Y
 #define FILE_NAME "/home/icasasola/proyecto2/breast-cancer-clean.csv"
-#define NUM_ITER 100
+#define NUM_ITER 1000
 #define TILE_W 10 //Tamaño mosaicos
 #define CUDA_CALL(x) {cudaError_t cuda_error__ = (x); if (cuda_error__) printf("CUDA error: " #x " returned \"%s\"\n", cudaGetErrorString(cuda_error__));}
 using namespace std;
@@ -19,20 +19,20 @@ void MatMul(float *a,float *d,float *c,int ha,int wa,int wb);
 void generateRandom(float *h_a,int rows, int cols);
 void leerDatos(float *X,float *y);
 void printMatrix(float *h_a, int rows, int cols);
-void sigmoid(float *x,float *z);
+void sigmoid(float *a,float *c, int w,int h);
 float costoCE(float *a,float *p);
 void VecAddition(float *a,float *c,float *res);
-void VecSubtraction(float *a,float *c,float *res);
-void VecScalAddition(float *a,float c,float *res);
-void MatScalMul(float *a,float m);
+void VecSubtraction(float *a,float *c,float *res,int width);
+void VecScalAddition(float *a,float c);
+void MatScalMul(float *a,float m,int rows);
 void MatTranspose(float *a,float *at,int width,int height);
 float VecSum(float *a);
 
 float *X,*y,*W,*Jc,*XT;
-int sizeX=HX*WX*sizeof(int);
-int sizeY=HY*sizeof(int);
-int sizeW=WX*sizeof(int);
-int sizeJ=NUM_ITER* sizeof(int);
+int sizeX=HX*WX*sizeof(float );
+int sizeY=HY*sizeof(float );
+int sizeW=WX*sizeof(float );
+int sizeJ=NUM_ITER* sizeof(float);
 float alpha = 0.01;
 
 int main() {
@@ -43,37 +43,39 @@ int main() {
     Jc = (float *) malloc(sizeJ);
     float b = 0;
 
+
     leerDatos(X,y);
     MatTranspose(X,XT,WX,HX);
     cout<<"q"<<endl;
     for(int iter=0;iter<NUM_ITER;iter++){
-        float *S,*Sa,*Sr,cost,*dW,*Z;
+        float *S,*Sr,cost,*dW,*Z;
         S = (float *) malloc(sizeY);
-        Sa = (float *) malloc(sizeY);
         Sr = (float *) malloc(sizeY);
         dW = (float *) malloc(sizeW);
         Z = (float *) malloc(sizeY);
+
         MatMul(X,W,Z,HX,WX,1);
-        sigmoid(Z,S);
-        VecScalAddition(S,b,Sa);
-        cost = costoCE(Sa,y);
+        VecScalAddition(Z,b);
+        sigmoid(Z,S,1,HY);
+        cost = costoCE(S,y);
         cout<<"Iteración "<<iter+1<<" : "<<cost<<endl;
         Jc[iter] = cost;
-        VecSubtraction(Sa,y,Sr);
+        VecSubtraction(S,y,Sr,HY);
         MatMul(XT,Sr,dW,WX,HX,1);
-        MatScalMul(dW,1.0/HY);
+        MatScalMul(dW,1.0/HY,WX);
         float db = VecSum(Sr);
         db = db/HY;
 
-        MatScalMul(dW,alpha);
+        MatScalMul(dW,alpha,WX);
         db=alpha*db;
 
-        VecSubtraction(W,dW,W);
+        VecSubtraction(W,dW,W,WX);
         b = b - db;
-        printMatrix(W,WX,1);
-        cout<<"b: "<<b<<endl;
+        //printMatrix(W,WX,1);
+        //cout<<"b: "<<b<<endl;
 
-        free(dW),free(S),free(Sa),free(Sr),free(Z);
+       free(dW),free(S),free(Sr),free(Z);
+       //cout<<"libero"<<endl;
     }
 
     free(X), free(y); free(W);
@@ -162,10 +164,10 @@ void leerDatos(float *X,float *y){
     archivo.close();
 }
 
-void sigmoid(float *x,float *z){
-    for(int i=0;i<HX;i++){
-        for(int j=0;j<WX;j++){
-            z[i*WX+j] = 1/(1+exp(-x[i*WX+j]));
+void sigmoid(float *a,float *c, int w,int h){
+    for(int i=0;i<h;i++){
+        for(int j=0;j<w;j++){
+            c[i*w+j] = 1/(1+exp(-a[i*w+j]));
         }
     }
 }
@@ -183,9 +185,9 @@ void VecAddition(float *a,float *c,float *res){
             res[i] = a[i] + c[i];
     }
 }
-void VecScalAddition(float *a,float c,float *res){
+void VecScalAddition(float *a,float c){
     for(int i= 0; i<HY; i++) {
-            res[i] = a[i] + c;
+            a[i] = a[i] + c;
     }
 }
 
@@ -197,13 +199,13 @@ float VecSum(float *a){
     return suma;
 }
 
-void VecSubtraction(float *a,float *c,float *res){
-    for(int i= 0; i<HY; i++) {
+void VecSubtraction(float *a,float *c,float *res,int width){
+    for(int i= 0; i<width; i++) {
             res[i] = a[i] - c[i];
     }
 }
-void MatScalMul(float *a,float m){
-    for (int i=0;i<HY;i++){
+void MatScalMul(float *a,float m,int rows){
+    for (int i=0;i<rows;i++){
         a[i] = a[i]*m;
     }
 }
