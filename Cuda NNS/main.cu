@@ -304,6 +304,8 @@ void train_serial() {
         //cout << "Score del modelo entrenamiento: " << s << "%" << endl;
         modelos[model] = st;
     }
+    //cout<<"Costo:"<<endl;
+    //printMatrix(Jc,NUM_ITER,1);
     int index = buscaMejorModelo(modelos);
     cout<<"Mejor score obtenido: "<<modelos[index]<<endl;
     cout<<"Alpha del mejor modelo: "<<alphas[index]<<endl;
