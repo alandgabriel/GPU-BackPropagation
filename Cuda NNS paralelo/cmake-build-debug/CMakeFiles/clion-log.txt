@@ -1,0 +1,15 @@
+/anaconda/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/usr/bin/gmake -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G "CodeBlocks - Unix Makefiles" /tmp/tmp.dNvpeycFVU
+-- The CUDA compiler identification is NVIDIA 11.1.105
+-- Check for working CUDA compiler: /usr/bin/nvcc
+-- Check for working CUDA compiler: /usr/bin/nvcc -- works
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/tmp.dNvpeycFVU/cmake-build-debug
+
+Cannot get compiler information:
+	Compiler exited with error code 1: /usr/bin/nvcc -g --generate-code=arch=compute_30,code=[compute_30,sm_30] -std=c++14 --dryrun /tmp/compiler-file5395529676560751118.cu
+	nvcc fatal   : Unsupported gpu architecture 'compute_30'
+	
+	

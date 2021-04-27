@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/alan/Documents/GPUs_Deeplearning_IIMAS/Cuda NNS/main.cu
+iostream
+-
+stdio.h
+-
+time.h
+-
+math.h
+-
+fstream
+-
+sstream
+-
+vector
+-
+

@@ -1,0 +1,3 @@
+/home/alan/Documents/GPUs_Deeplearning_IIMAS/Cuda NNS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/alan/Documents/GPUs_Deeplearning_IIMAS/Cuda NNS/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/alan/Documents/GPUs_Deeplearning_IIMAS/Cuda NNS/cmake-build-debug/CMakeFiles/Cuda_NNS.dir
